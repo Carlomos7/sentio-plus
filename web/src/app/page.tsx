@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
 import {
   MessageSquare,
   Database,
@@ -79,9 +80,9 @@ function Navbar() {
           <button className="hidden sm:block text-sentio-gray hover:text-sentio-dark transition-colors font-medium">
             Sign In
           </button>
-          <button className="px-5 py-2.5 rounded-full btn-primary text-white font-medium">
+          <Link href="/demo" className="px-5 py-2.5 rounded-full btn-primary text-white font-medium">
             Try Demo
-          </button>
+          </Link>
         </div>
       </div>
     </motion.nav>
@@ -128,10 +129,10 @@ function Hero() {
             variants={fadeInUp}
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
           >
-            <button className="group px-8 py-4 rounded-full btn-primary text-white font-semibold text-lg flex items-center gap-2">
+            <Link href="/demo" className="group px-8 py-4 rounded-full btn-primary text-white font-semibold text-lg flex items-center gap-2">
               Try Interactive Demo
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </button>
+            </Link>
             <button className="px-8 py-4 rounded-full border border-sentio-border text-sentio-dark font-medium hover:bg-sentio-light transition-colors flex items-center gap-2">
               <Play className="w-5 h-5" />
               Watch 2-Min Video
@@ -641,10 +642,10 @@ function CTA() {
             Join thousands of companies who&apos;ve stopped guessing and started understanding.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <button className="group px-8 py-4 rounded-full btn-primary text-white font-semibold text-lg flex items-center gap-2">
+            <Link href="/demo" className="group px-8 py-4 rounded-full btn-primary text-white font-semibold text-lg flex items-center gap-2">
               Start Free Demo
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </button>
+            </Link>
             <button className="px-8 py-4 rounded-full border border-sentio-border text-sentio-dark font-medium hover:bg-white transition-colors">
               Schedule a Call
             </button>
