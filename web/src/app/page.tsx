@@ -64,6 +64,7 @@ function Navbar() {
             height={32}
             className="h-8 w-auto"
           />
+          <span className="text-xl font-semibold text-sentio-dark">Sentio</span>
         </div>
         <div className="hidden md:flex items-center gap-8">
           <a href="#features" className="text-sentio-gray hover:text-sentio-dark transition-colors">
@@ -671,19 +672,7 @@ function Footer() {
   return (
     <footer className="py-12 px-6 border-t border-sentio-border">
       <div className="max-w-7xl mx-auto">
-        <div className="grid md:grid-cols-4 gap-8 mb-12">
-          <div>
-            <Image
-              src="/sentio-logo.png"
-              alt="Sentio"
-              width={100}
-              height={28}
-              className="h-7 w-auto mb-4"
-            />
-            <p className="text-sentio-gray text-sm">
-              AI-powered review intelligence that helps you understand your customers better.
-            </p>
-          </div>
+        <div className="grid md:grid-cols-3 gap-8 mb-12">
           <div>
             <h4 className="font-semibold mb-4 text-sentio-dark">Product</h4>
             <ul className="space-y-2 text-sm text-sentio-gray">

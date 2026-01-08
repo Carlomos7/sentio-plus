@@ -11,6 +11,8 @@ import {
   Trash2,
   MessageSquare,
   Loader2,
+  Pencil,
+  Check,
 } from "lucide-react";
 
 interface Message {
@@ -40,7 +42,11 @@ export default function DemoPage() {
   const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [editingSessionId, setEditingSessionId] = useState<string | null>(null);
+  const [editingTitle, setEditingTitle] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const editInputRef = useRef<HTMLInputElement>(null);
+  const headerInputRef = useRef<HTMLInputElement>(null);
 
   const activeSession = sessions.find((s) => s.id === activeSessionId);
   const messages = activeSession?.messages || [];
@@ -81,6 +87,24 @@ export default function DemoPage() {
       const remaining = sessions.filter((s) => s.id !== id);
       setActiveSessionId(remaining.length > 0 ? remaining[0].id : null);
     }
+  };
+
+  const startEditing = (session: ChatSession) => {
+    setEditingSessionId(session.id);
+    setEditingTitle(session.title);
+    setTimeout(() => editInputRef.current?.focus(), 0);
+  };
+
+  const saveTitle = () => {
+    if (editingSessionId && editingTitle.trim()) {
+      setSessions((prev) =>
+        prev.map((s) =>
+          s.id === editingSessionId ? { ...s, title: editingTitle.trim() } : s
+        )
+      );
+    }
+    setEditingSessionId(null);
+    setEditingTitle("");
   };
 
   const sendMessage = async (content: string) => {
@@ -190,6 +214,7 @@ export default function DemoPage() {
               height={28}
               className="h-7 w-auto"
             />
+            <span className="text-lg font-semibold text-sentio-dark">Sentio</span>
           </Link>
           <button
             onClick={createNewSession}
@@ -214,16 +239,58 @@ export default function DemoPage() {
               onClick={() => setActiveSessionId(session.id)}
             >
               <MessageSquare className="w-4 h-4 flex-shrink-0" />
-              <span className="text-sm truncate flex-1">{session.title}</span>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  deleteSession(session.id);
-                }}
-                className="opacity-0 group-hover:opacity-100 p-1 hover:bg-red-100 rounded transition-all"
-              >
-                <Trash2 className="w-3.5 h-3.5 text-red-500" />
-              </button>
+              {editingSessionId === session.id ? (
+                <input
+                  ref={editInputRef}
+                  type="text"
+                  value={editingTitle}
+                  onChange={(e) => setEditingTitle(e.target.value)}
+                  onBlur={saveTitle}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") saveTitle();
+                    if (e.key === "Escape") {
+                      setEditingSessionId(null);
+                      setEditingTitle("");
+                    }
+                  }}
+                  onClick={(e) => e.stopPropagation()}
+                  className="text-sm flex-1 bg-white border border-sentio-blue rounded px-2 py-0.5 outline-none"
+                />
+              ) : (
+                <span className="text-sm truncate flex-1">{session.title}</span>
+              )}
+              <div className="flex items-center gap-1">
+                {editingSessionId === session.id ? (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      saveTitle();
+                    }}
+                    className="p-1 hover:bg-sentio-blue/20 rounded transition-all"
+                  >
+                    <Check className="w-3.5 h-3.5 text-sentio-blue" />
+                  </button>
+                ) : (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      startEditing(session);
+                    }}
+                    className="opacity-0 group-hover:opacity-100 p-1 hover:bg-sentio-blue/20 rounded transition-all"
+                  >
+                    <Pencil className="w-3.5 h-3.5 text-sentio-blue" />
+                  </button>
+                )}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    deleteSession(session.id);
+                  }}
+                  className="opacity-0 group-hover:opacity-100 p-1 hover:bg-red-100 rounded transition-all"
+                >
+                  <Trash2 className="w-3.5 h-3.5 text-red-500" />
+                </button>
+              </div>
             </motion.div>
           ))}
 
@@ -256,7 +323,36 @@ export default function DemoPage() {
               <MessageSquare className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h1 className="font-semibold text-sentio-dark">Sentio AI</h1>
+              {editingSessionId === activeSessionId && activeSession ? (
+                <input
+                  ref={headerInputRef}
+                  type="text"
+                  value={editingTitle}
+                  onChange={(e) => setEditingTitle(e.target.value)}
+                  onBlur={saveTitle}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") saveTitle();
+                    if (e.key === "Escape") {
+                      setEditingSessionId(null);
+                      setEditingTitle("");
+                    }
+                  }}
+                  className="font-semibold text-sentio-dark bg-sentio-light border border-sentio-blue rounded px-2 py-0.5 outline-none"
+                />
+              ) : (
+                <h1
+                  className="font-semibold text-sentio-dark cursor-pointer hover:text-sentio-blue transition-colors"
+                  onClick={() => {
+                    if (activeSession) {
+                      setEditingSessionId(activeSession.id);
+                      setEditingTitle(activeSession.title);
+                      setTimeout(() => headerInputRef.current?.focus(), 0);
+                    }
+                  }}
+                >
+                  {activeSession?.title || "Sentio AI"}
+                </h1>
+              )}
               <p className="text-xs text-sentio-gray">
                 Context from all 12,495 reviews
               </p>
