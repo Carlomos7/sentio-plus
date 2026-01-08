@@ -1,5 +1,40 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Project Structure
+
+```
+web/
+├── src/
+│   └── app/
+│       ├── api/
+│       │   └── chat/
+│       │       └── route.ts      # Chat API endpoint (AWS Bedrock)
+│       ├── demo/
+│       │   └── page.tsx          # Demo chat interface
+│       ├── globals.css           # Global styles & Tailwind
+│       ├── layout.tsx            # Root layout
+│       └── page.tsx              # Landing page
+├── public/                       # Static assets (logos, icons)
+├── .env.local                    # Environment variables (create this)
+├── package.json
+├── tailwind.config.ts
+└── tsconfig.json
+```
+
+## Environment Setup
+
+Create a `.env.local` file in the `web/` directory (same level as `package.json`):
+
+```bash
+# web/.env.local
+AWS_ACCESS_KEY_ID=your_access_key_here
+AWS_SECRET_ACCESS_KEY=your_secret_key_here
+AWS_REGION=us-west-2
+BEDROCK_MODEL_ID=meta.llama3-8b-instruct-v1:0
+```
+
+> **Note**: The app runs in demo mode without AWS credentials — no setup required for basic testing.
+
 ## Getting Started
 
 First, run the development server:
@@ -15,22 +50,3 @@ bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
