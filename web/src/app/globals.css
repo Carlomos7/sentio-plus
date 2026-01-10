@@ -1,0 +1,105 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-outfit: 'Outfit', system-ui, sans-serif;
+    --sentio-blue: #1e6cff;
+    --sentio-blue-light: #60a5fa;
+    --sentio-dark: #0f172a;
+    --sentio-gray: #64748b;
+    --sentio-light: #f8fafc;
+    --sentio-border: #e2e8f0;
+    --sentio-card: #ffffff;
+  }
+}
+
+@theme inline {
+  --color-sentio-blue: var(--sentio-blue);
+  --color-sentio-blue-light: var(--sentio-blue-light);
+  --color-sentio-dark: var(--sentio-dark);
+  --color-sentio-gray: var(--sentio-gray);
+  --color-sentio-light: var(--sentio-light);
+  --color-sentio-border: var(--sentio-border);
+  --color-sentio-card: var(--sentio-card);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+body {
+  background: #ffffff;
+  color: var(--sentio-dark);
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, #1e6cff 0%, #60a5fa 50%, #1e6cff 100%);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradient-shift 4s ease infinite;
+}
+
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.hero-bg {
+  background: 
+    radial-gradient(ellipse 80% 60% at 50% -20%, rgba(30, 108, 255, 0.12), transparent),
+    radial-gradient(ellipse 50% 40% at 90% 80%, rgba(96, 165, 250, 0.08), transparent),
+    linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+}
+
+.grid-pattern {
+  background-image: 
+    linear-gradient(rgba(30, 108, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(30, 108, 255, 0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #1e6cff 0%, #3b82f6 100%);
+  box-shadow: 0 4px 14px rgba(30, 108, 255, 0.35);
+  transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+  box-shadow: 0 6px 20px rgba(30, 108, 255, 0.45);
+  transform: translateY(-1px);
+}
+
+.card-shadow {
+  box-shadow: 0 4px 24px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.card-shadow-hover:hover {
+  box-shadow: 0 12px 40px rgba(15, 23, 42, 0.1), 0 2px 6px rgba(15, 23, 42, 0.06);
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+.animate-float {
+  animation: float 5s ease-in-out infinite;
+}
+
+html {
+  scroll-behavior: smooth;
+}
