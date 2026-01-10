@@ -1,6 +1,7 @@
 '''Application Configurations'''
 from enum import Enum
 from functools import lru_cache
+from pathlib import Path
 
 from pydantic import BaseSettings, SettingsConfigDict
 
@@ -23,7 +24,7 @@ class Settings(BaseSettings):
     
     # ChromaDB
     chroma_client_type: ChromaClientType = ChromaClientType.PERSISTENT
-    chroma_persist_path: str = "./chroma_data"  # For persistent client
+    chroma_persist_path: Path = Path("./chroma_data")  # For persistent client
     chroma_host: str = "localhost"              # For HTTP client
     chroma_port: int = 8000                     # For HTTP client
     chroma_collection_name: str = "sentio_reviews"
