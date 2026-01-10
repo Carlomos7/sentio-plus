@@ -13,6 +13,10 @@ class Settings(BaseSettings):
     '''Application settings'''
 
     model_config = SettingsConfigDict(env_file='.env', env_file_encoding='utf-8') #overwrites below
+    
+    app_name: str = "Sentio+ RAG API"
+    app_description: str = "Sentio+ RAG API"
+    version: str = "0.1.0"
 
     # AWS
     aws_region: str = "us-west-2"
