@@ -14,7 +14,7 @@ S3
 ChromaDB
 langchain
 LLM-Bedrock
-Code-local->lambda (preffered)
+Code-local->lam da (preffered)
 
 Evidence-Backed Product Feedback Analysis using RAG
 
@@ -32,6 +32,8 @@ Modern organizations collect massive volumes of customer feedback through produc
 
 - Which problems should leadership prioritize fixing first?
 
+This project is designed to function as an internal decision-support tool for Product, CX, and Strategy teams. Rather than simply classifying sentiment, the system **translates unstructured customer feedback into actionable business insights** that inform *product prioritization, roadmap decisions, and customer experience improvements.*
+
 ## Key Capabilities
 
 - Scalable ingestion of customer reviews via Amazon S3
@@ -41,6 +43,16 @@ Modern organizations collect massive volumes of customer feedback through produc
 - Evidence-grounded natural language insights
 - Business-ready summaries, root causes, and trends
 - Local code execution with cloud-based model services
+
+## Data
+We use the *Google Play Store Reviews* dataset (sourced from Kaggle) to power the sentiment analysis and insight generation in this project.
+
+**Dataset:** [Google Play Store Reviews](https://www.kaggle.com/datasets/prakharrathi25/google-play-store-reviews/data)
+**Contents:** ~12,000 user review texts with corresponding ratings and metadata for apps
+**Use case:** Textual sentiment analysis to infer product strengths, weaknesses, and customer perception trends.
+
+
+
 
 ## Pipeline
 
