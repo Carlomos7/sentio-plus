@@ -53,6 +53,13 @@ class Settings(BaseSettings):
     log_dir: Path = PROJECT_ROOT / "logs"
     logging_config_file: Path = CONFIG_DIR / "logging_conf.json"
     
+    # Chunking
+    chunk_size: int = 500
+    chunk_overlap: int = 100
+    
+    # Ingestion
+    stop_num: int = 1000
+    
 @lru_cache
 def get_settings() -> Settings:
     '''Get cached settings instance'''
