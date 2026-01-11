@@ -1,0 +1,7 @@
+# Ignore everything
+*
+
+# Allow only what we need
+!pyproject.toml
+!src/
+!main.py
