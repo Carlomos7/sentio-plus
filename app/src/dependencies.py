@@ -25,4 +25,4 @@ def get_vector_store():
 @lru_cache
 def get_llm():
     '''Provide LLM instance'''
-    raise NotIImplementedError("LLM dependency not implemented yet.")
+    raise NotImplementedError("LLM dependency not implemented yet.")
