@@ -5,6 +5,9 @@ from pathlib import Path
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+CONFIG_DIR = Path(__file__).parent
+PROJECT_ROOT = CONFIG_DIR.parent.parent
+
 class ChromaClientType(str, Enum):
     PERSISTENT = "persistent"
     HTTP = "http"
@@ -39,6 +42,16 @@ class Settings(BaseSettings):
     
     # App
     debug_mode: bool = False
+
+    # Logging
+    log_level: str = "INFO"
+    log_to_file: bool = True
+
+    # Directories
+    data_dir: Path = PROJECT_ROOT / "data"
+    cache_dir: Path = data_dir / "cache"
+    log_dir: Path = PROJECT_ROOT / "logs"
+    logging_config_file: Path = CONFIG_DIR / "logging_conf.json"
     
 @lru_cache
 def get_settings() -> Settings:
