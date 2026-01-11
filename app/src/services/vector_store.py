@@ -28,13 +28,11 @@ class VectorStore:
                 )
             except Exception as e:
                 print(f"The following error occured while creating a PersistentClient: {e}")
-                return None
         else: #If not default it's a HttpClient
             try:
-                self.client = chromadb.HttpClient(host=path, port=port)
+                self.client = chromadb.HttpClient(host=host, port=port)
             except Exception as e:
                 print(f"The following error occured while creating an HttpClient: {e}")
-                return None
 
         self.collection = self.client.get_or_create_collection(
             name=collection_name,
