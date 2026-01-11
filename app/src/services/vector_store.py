@@ -1,3 +1,5 @@
+"""ChromaDB vector store service."""
+
 import uuid
 from pathlib import Path
 from typing import Any
@@ -6,45 +8,45 @@ import chromadb
 from chromadb.api import ClientAPI
 from chromadb.config import Settings as ChromaSettings
 
-#from src.config import ChromaClientType
+from src.config.logging import get_logger
+from src.config.settings import ChromaClientType
+
+logger = get_logger(__name__)
+
 
 class VectorStore:
     """Wrapper for ChromaDB operations."""
 
-    def __init__(self, collection_name: str, path: Path | None = None, host: str | None = None, port: int = 8000):
-        # self, client_type: ChromaClientType, collection_name: str, persist_path: str | None = None, host: str | None = None, port: int | None = None
+    def __init__(
+        self,
+        client_type: ChromaClientType,
+        collection_name: str,
+        persist_path: Path | None = None,
+        host: str | None = None,
+        port: int | None = None,
+    ):
         """Initialize ChromaDB client and collection.
-        
-        Args:
-            collection_name: Name of the collection.
-            path: Directory for persistent storage.
-            host: Host for HttpClient. If not default, use an HttpClient. Else, use PersistentClient.
-            port: Port number for Chromadb HttpClient.
-        """
-        if(host is None): #if default port, is PersistentClient
-            try:
-                self.client = chromadb.PersistentClient(
-                    path=path, #path is directory
-                )
-            except Exception as e:
-                print(f"The following error occured while creating a PersistentClient: {e}")
-        else: #If not default it's a HttpClient
-            try:
-                self.client = chromadb.HttpClient(host=host, port=port)
-            except Exception as e:
-                print(f"The following error occured while creating an HttpClient: {e}")
 
+        Args:
+            client_type: PERSISTENT for local, HTTP for remote.
+            collection_name: Name of the collection.
+            persist_path: Directory for persistent storage (persistent only).
+            host: ChromaDB server host (HTTP only).
+            port: ChromaDB server port (HTTP only).
+        """
+        self.client = self._create_client(client_type, persist_path, host, port)
         self.collection = self.client.get_or_create_collection(
             name=collection_name,
-            metadata={"hnsw:space": "cosine"}, #default, cosine distance
+            metadata={"hnsw:space": "cosine"},
         )
-        print(f"✅ ChromaDB initialized: {collection_name} ({self.collection.count()} documents)")
+        logger.info(
+            f"✅ ChromaDB initialized ({client_type.value}): {collection_name} ({self.collection.count()} documents)"
+        )
 
-    '''
     def _create_client(
         self,
         client_type: ChromaClientType,
-        persist_path: str | None,
+        persist_path: Path | None,
         host: str | None,
         port: int | None,
     ) -> ClientAPI:
@@ -52,8 +54,9 @@ class VectorStore:
         if client_type == ChromaClientType.PERSISTENT:
             if not persist_path:
                 raise ValueError("persist_path required for persistent client")
+            persist_path.mkdir(parents=True, exist_ok=True)
             return chromadb.PersistentClient(
-                path=persist_path,
+                path=str(persist_path),
                 settings=ChromaSettings(anonymized_telemetry=False),
             )
         elif client_type == ChromaClientType.HTTP:
@@ -66,59 +69,60 @@ class VectorStore:
             )
         else:
             raise ValueError(f"Unknown client type: {client_type}")
-    '''
 
     def add_documents(
         self,
-        documents: list[str], #variable type
-        metadatas: list[dict[str, Any]] | None = None, #Can be None, default None
+        documents: list[str],  # variable type
+        metadatas: list[dict[str, Any]] | None = None,  # Can be None, default None
         ids: list[str] | None = None,
-        batch_size: int = 500, #TODO: Subject to change
+        batch_size: int = 500,  # TODO: Subject to change
     ) -> int:
         """Add documents to the collection in batches.
-        
+
         Args:
             documents: List of text documents.
             metadatas: Optional metadata for each document.
             ids: Optional IDs (generated if not provided).
             batch_size: Documents per batch.
-            
+
         Returns:
             Number of documents added.
         """
         if ids is None:
-            ids = [str(uuid.uuid4()) for _ in documents] #bad avoid using (may cause duplicate ids in some circumstances)
+            ids = [
+                str(uuid.uuid4()) for _ in documents
+            ]  # bad avoid using (may cause duplicate ids in some circumstances)
         if metadatas is None:
             metadatas = [{} for _ in documents]
 
         total = len(documents)
-        for i in range(0, total, batch_size): #Each batch
+        for i in range(0, total, batch_size):  # Each batch
             end = min(i + batch_size, total)
             self.collection.add(
                 documents=documents[i:end],
                 metadatas=metadatas[i:end],
                 ids=ids[i:end],
             )
-            print(f"   ✅ Batch {i}:{end} added")
+            logger.info(f"   ✅ Batch {i}:{end} added")
 
-        print(f"🎉 Added {total} documents. Collection count: {self.collection.count()}")
+        logger.info(f"Added {total} documents. Collection count: {self.collection.count()}")
         return total
 
     def query(
         self,
         query_text: str,
         n_results: int = 5,
-        threshold: float = 0.8, # TODO:Subject to change, normal default is 0.7
+        threshold: float = 0.8,  # TODO:Subject to change, normal default is 0.7
         where: dict[str, Any] | None = None,
     ) -> list[dict[str, Any]]:
         """Query the collection with distance threshold filtering.
-        
+
         Args:
             query_text: Search query.
             n_results: Max results to return.
             threshold: Max distance (lower = stricter). Cosine: 0=identical, 2=opposite.
             where: Optional metadata filter.
-            
+
         Returns:
             List of dicts with 'text', 'metadata', 'distance'.
         """
@@ -137,21 +141,23 @@ class VectorStore:
                 results["distances"][0],
             ):
                 if dist <= threshold:
-                    docs.append({
-                        "text": text,
-                        "metadata": meta,
-                        "distance": dist,
-                    })
+                    docs.append(
+                        {
+                            "text": text,
+                            "metadata": meta,
+                            "distance": dist,
+                        }
+                    )
 
-        print(f"✅ Retrieved {len(docs)} documents (threshold: {threshold})")
+        logger.debug(f"Retrieved {len(docs)} documents (threshold: {threshold})")
         return docs
 
     def get_all_metadata_values(self, field: str) -> set[str]:
         """Get unique values for a metadata field.
-        
+
         Args:
             field: Metadata field name.
-            
+
         Returns:
             Set of unique values for the given field.
         """
@@ -173,6 +179,7 @@ class VectorStore:
             name=self.collection.name,
             metadata={"hnsw:space": "cosine"},
         )
-        print("🗑️ Collection cleared")
+        logger.info("🗑️ Collection cleared")
 
-#TODO: Figure out metadata and ids
+
+# TODO: Figure out metadata and ids
