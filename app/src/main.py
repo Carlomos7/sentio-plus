@@ -2,6 +2,7 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from src.config.settings import get_settings
+from src.dependencies import get_vector_store
 
 settings = get_settings()
 
@@ -12,7 +13,9 @@ async def lifespan(app: FastAPI):
     print(f"Chroma Path: {settings.chroma_persist_path}")
     print(f"Bedrock Model ID: {settings.bedrock_model_id}")
     
-    # TODO: ChromaDB client
+    # ChromaDB client
+    vector_store = get_vector_store()
+    app.state.vector_store = vector_store
     # TODO: LLM client (bedrock)
     
     yield
