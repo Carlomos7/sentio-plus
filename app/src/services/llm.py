@@ -1,6 +1,7 @@
 """LLM client service using LangChain."""
 
 from typing import Any
+import re
 
 from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.messages import HumanMessage, SystemMessage
@@ -108,6 +109,14 @@ class LLMClient:
         """
         response = self.llm.invoke(prompt)
         return response.content
+
+    def invoke_structured(self, prompt: str) -> Any:
+        '''Invoke LLM for cllassificaiton / routiung (no reasoning!!!)'''
+        response = self.llm.invoke(prompt)
+        content = response.content
+        content = re.sub(r"<think>.*?</think>", "", content, flags=re.DOTALL)#</think>
+        
+        return [s.strip() for s in content.split(",")]
 
     def generate(
         self,
