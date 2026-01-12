@@ -7,6 +7,7 @@ from fastapi import FastAPI
 from src.config.logging import get_logger
 from src.config.settings import get_settings
 from src.dependencies import get_vector_store
+from src.routes import ingest_router
 
 
 logger = get_logger(__name__)
@@ -48,6 +49,8 @@ def root():
         "health": "/health",
     }
 
+# Register routers
+app.include_router(ingest_router)
 
 @app.get("/health")
 def health_check():
@@ -57,4 +60,5 @@ def health_check():
         "status": "healthy",
         "service": settings.app_name,
         "documents": vector_store.count(),
+        "data_dir": settings.data_dir,
     }
