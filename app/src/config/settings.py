@@ -5,8 +5,14 @@ from pathlib import Path
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+# Paths: app/src/config/settings.py -> app/ -> project root
+APP_ROOT = Path(__file__).parent.parent.parent
 CONFIG_DIR = Path(__file__).parent
-PROJECT_ROOT = CONFIG_DIR.parent.parent
+
+# PROJECT_ROOT: where data/ directory lives
+# Docker: /app/data (mounted), so PROJECT_ROOT = /app
+# Local: ./data (sibling to app/), so PROJECT_ROOT = app/ parent
+PROJECT_ROOT = APP_ROOT if str(APP_ROOT) == "/app" else APP_ROOT.parent
 
 class ChromaClientType(str, Enum):
     """ChromaDB client type."""
