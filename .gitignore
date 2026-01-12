@@ -216,4 +216,5 @@ app/chroma_data/*
 data/raw/*
 data/processed/*
 !data/raw/.gitkeep
-!data/processed/.gitkeep
+!data/processed/.gitkeepdata/*.csv
+data/*.csv
