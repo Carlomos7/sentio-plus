@@ -20,7 +20,7 @@ async def lifespan(app: FastAPI):
     logger.info("Starting Sentio+ API")
     logger.info(f"Chroma path: {settings.chroma_persist_path.resolve()}")
     logger.info(f"Chroma client type: {settings.chroma_client_type.value}")
-    logger.info(f"Bedrock model: {settings.bedrock_model_id}")
+    logger.info(f"Bedrock model: {settings.llm_model}")
 
     # ChromaDB client
     vector_store = get_vector_store()
