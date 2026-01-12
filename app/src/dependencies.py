@@ -5,6 +5,8 @@ from functools import lru_cache
 from src.config.logging import get_logger
 from src.config.settings import Settings, get_settings
 from src.services.ingest import IngestionService
+from src.services.llm import LLMClient
+from src.services.rag import RAGService
 from src.services.vector_store import VectorStore
 
 logger = get_logger(__name__)
@@ -18,7 +20,6 @@ def get_config() -> Settings:
 @lru_cache
 def get_vector_store() -> VectorStore:
     '''Provide ChromaDB vector store instance'''
-    settings = get_settings()
     settings = get_settings()
     return VectorStore(
         client_type=settings.chroma_client_type,
@@ -38,6 +39,25 @@ def get_ingest_service() -> IngestionService:
     )
 
 @lru_cache
-def get_llm():
-    '''Provide LLM instance'''
-    raise NotImplementedError("LLM dependency not implemented yet.")
+def get_llm() -> LLMClient:
+    """Provide LLM client instance."""
+    settings = get_settings()
+    return LLMClient(
+        provider=settings.llm_provider,
+        model=settings.llm_model,
+        base_url=settings.llm_base_url,
+        api_key=settings.llm_api_key,
+        temperature=settings.llm_temperature,
+        max_tokens=settings.llm_max_tokens,
+        aws_region=settings.aws_region,
+    )
+
+def get_rag_service() -> RAGService:
+    """Provide RAG service instance."""
+    settings = get_settings()
+    return RAGService(
+        llm=get_llm(),
+        vector_store=get_vector_store(),
+        top_k=settings.retrieval_top_k,
+        threshold=settings.retrieval_threshold,
+    )

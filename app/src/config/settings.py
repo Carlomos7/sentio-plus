@@ -19,6 +19,12 @@ class ChromaClientType(str, Enum):
     PERSISTENT = "persistent"
     HTTP = "http"
 
+class LLMProvider(str, Enum):
+    """LLM provider type."""
+
+    OPENAI = "openai"    # Any OpenAI-compatible API (Ollama, LM Studio, vLLM, OpenAI)
+    BEDROCK = "bedrock"  # AWS Bedrock
+
 class Settings(BaseSettings):
     '''Application settings'''
 
@@ -30,13 +36,18 @@ class Settings(BaseSettings):
     version: str = "0.1.0"
     debug_mode: bool = False
 
-    # AWS
+    # LLM - Universal config
+    llm_provider: LLMProvider = LLMProvider.BEDROCK
+    llm_base_url: str = "" 
+    llm_model: str = "anthropic.claude-3-sonnet-20240229-v1:0"
+    llm_api_key: str = ""  # Local models don't need this
+    llm_temperature: float = 0.1
+    llm_max_tokens: int = 1000
+
+    # AWS (only for Bedrock)
     aws_region: str = "us-west-2"
     aws_access_key_id: str | None = None
     aws_secret_access_key: str | None = None
-    
-    # Bedrock
-    bedrock_model_id: str = "anthropic.claude-3-sonnet-20240229-v1:0"
     
     # ChromaDB
     chroma_client_type: ChromaClientType = ChromaClientType.PERSISTENT
