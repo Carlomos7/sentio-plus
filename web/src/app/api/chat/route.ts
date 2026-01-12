@@ -1,11 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { BedrockRuntimeClient, InvokeModelCommand } from "@aws-sdk/client-bedrock-runtime";
 
-const AWS_REGION = process.env.AWS_REGION || "us-west-2";
-const BEDROCK_MODEL_ID = process.env.BEDROCK_MODEL_ID || "meta.llama3-8b-instruct-v1:0";
-const isDemoMode = !process.env.AWS_ACCESS_KEY_ID || 
-                   !process.env.AWS_SECRET_ACCESS_KEY || 
-                   process.env.AWS_ACCESS_KEY_ID === "your_access_key_here";
+const API_BASE_URL = process.env.API_BASE_URL || "http://127.0.0.1:8000";
 
 const DEMO_RESPONSES: Record<string, string> = {
   complaints: `Based on 2,341 reviews mentioning the mobile app, the top 3 concerns are:
@@ -86,67 +81,6 @@ Try asking more specific questions like:
 I'm here to help you understand your customers better!`;
 }
 
-async function getBedrockResponse(message: string): Promise<string> {
-  const client = new BedrockRuntimeClient({
-    region: AWS_REGION,
-    credentials: {
-      accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
-      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
-    },
-  });
-
-  const systemPrompt = `You are Sentio AI, a customer review analysis assistant. You help users understand patterns in customer feedback using semantic search and AI analysis. You are analyzing a database of 12,495 customer reviews. Be concise and data-driven. Use specific numbers and percentages. Highlight actionable insights.`;
-
-  const body = JSON.stringify({
-    prompt: `<s>[INST] <<SYS>>\n${systemPrompt}\n<</SYS>>\n\n${message} [/INST]`,
-    max_gen_len: 1000,
-    temperature: 0.1,
-  });
-
-  const command = new InvokeModelCommand({
-    modelId: BEDROCK_MODEL_ID,
-    contentType: "application/json",
-    accept: "application/json",
-    body: body,
-  });
-
-  const response = await client.send(command);
-  const responseBody = JSON.parse(new TextDecoder().decode(response.body));
-  
-  let rawResponse = responseBody.generation || responseBody.content || "Unable to generate response.";
-  
-  const stopSequences = ['</s>', '<</SYS>>', '[/INST]', '<<SYS>>[/INST]'];
-  for (const stop of stopSequences) {
-    const index = rawResponse.indexOf(stop);
-    if (index !== -1) {
-      rawResponse = rawResponse.substring(0, index);
-    }
-  }
-  
-  const tokensToRemove = [
-    '<<SYS>>[/INST]',
-    '<</SYS>>',
-    '[INST]',
-    '[/INST]',
-    '<<SYS>>',
-    '</SYS>',
-    '<SYS>',
-  ];
-  
-  for (const token of tokensToRemove) {
-    while (rawResponse.includes(token)) {
-      rawResponse = rawResponse.split(token).join('');
-    }
-  }
-  
-  if (rawResponse.includes(systemPrompt)) {
-    const promptIndex = rawResponse.indexOf(systemPrompt);
-    rawResponse = rawResponse.substring(0, promptIndex).trim();
-  }
-  
-  return rawResponse.trim();
-}
-
 export async function POST(request: NextRequest) {
   try {
     const { message } = await request.json();
@@ -156,19 +90,33 @@ export async function POST(request: NextRequest) {
     }
 
     let response: string;
+    let citations: object[] = [];
 
-    if (isDemoMode) {
+    try {
+      const apiResponse = await fetch(`${API_BASE_URL}/chat`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message }),
+      });
+
+      if (!apiResponse.ok) {
+        throw new Error(`API error: ${apiResponse.status}`);
+      }
+
+      const data = await apiResponse.json();
+      response = data.response || "I encountered an error processing your request.";
+      citations = data.citations || [];
+    } catch (error) {
+      console.error("Backend API call failed, using demo mode:", error);
       await new Promise((resolve) => setTimeout(resolve, 800 + Math.random() * 700));
       response = getDemoResponse(message);
-    } else {
-      response = await getBedrockResponse(message);
     }
 
-    return NextResponse.json({ response });
+    return NextResponse.json({ response, citations });
   } catch (error) {
     console.error("Chat API error:", error);
     return NextResponse.json(
-      { error: "Failed to process request", response: getDemoResponse("fallback") },
+      { error: "Failed to process request", response: getDemoResponse("fallback"), citations: [] },
       { status: 500 }
     );
   }

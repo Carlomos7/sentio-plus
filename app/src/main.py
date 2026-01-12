@@ -7,7 +7,7 @@ from fastapi import FastAPI
 from src.config.logging import get_logger
 from src.config.settings import get_settings
 from src.dependencies import get_vector_store
-from src.routes import ingest_router
+from src.routes import ingest_router, chat_router
 
 
 logger = get_logger(__name__)
@@ -25,7 +25,6 @@ async def lifespan(app: FastAPI):
     # ChromaDB client
     vector_store = get_vector_store()
     app.state.vector_store = vector_store
-    # TODO: LLM client (bedrock)
 
     yield
 
@@ -51,6 +50,7 @@ def root():
 
 # Register routers
 app.include_router(ingest_router)
+app.include_router(chat_router)
 
 @app.get("/health")
 def health_check():

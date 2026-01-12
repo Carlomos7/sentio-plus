@@ -6,6 +6,7 @@ from src.config.logging import get_logger
 from src.config.settings import Settings, get_settings
 from src.services.ingest import IngestionService
 from src.services.vector_store import VectorStore
+from src.services.chat import ChatService
 
 logger = get_logger(__name__)
 
@@ -37,7 +38,10 @@ def get_ingest_service() -> IngestionService:
         chunk_overlap=settings.chunk_overlap,
     )
 
-@lru_cache
-def get_llm():
-    '''Provide LLM instance'''
-    raise NotImplementedError("LLM dependency not implemented yet.")
+def get_chat_service() -> ChatService:
+    """Provide chat service instance."""
+    settings = get_settings()
+    return ChatService(
+        vector_store=get_vector_store(),
+        settings=settings,
+    )
