@@ -1,0 +1,13 @@
+[project]
+name = "sentio-plus"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "kagglehub>=0.4.0",
+    "pandas>=2.0.0",
+    "ipykernel>=6.0.0",
+    "chromadb>=1.4.0",
+    "pyarrow>=22.0.0",
+]
