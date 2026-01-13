@@ -34,10 +34,10 @@ interface ChatSession {
 const STORAGE_KEY = "sentio-chat-sessions";
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 const SAMPLE_QUESTIONS = [
-  "What are the main complaints about our mobile app?",
-  "What do customers love most about our product?",
-  "Show me sentiment trends from last month",
-  "Which features get the most negative feedback?",
+  "What are the trends for negative reviews in finance apps?",
+  "Which health & fitness apps have the best user retention feedback?",
+  "Compare sentiment patterns between food delivery apps",
+  "What features drive 5-star reviews in productivity apps?",
 ];
 
 export default function DemoPage() {

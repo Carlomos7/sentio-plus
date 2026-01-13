@@ -185,25 +185,25 @@ function DashboardPreview() {
           <div className="space-y-3">
             <div className="bg-sentio-light rounded-lg p-3 text-sm">
               <p className="text-sentio-gray mb-1 text-xs font-medium">You asked:</p>
-              <p className="text-sentio-dark">&quot;What are the main complaints about our mobile app?&quot;</p>
+              <p className="text-sentio-dark">&quot;What are the trends for negative reviews in finance apps?&quot;</p>
             </div>
-            <div className="bg-sentio-blue/5 rounded-lg p-3 text-sm border border-sentio-blue/20">
-              <p className="text-sentio-blue mb-2 text-xs font-medium">Analysis complete:</p>
-              <p className="text-sentio-dark">
-                Based on 2,341 reviews mentioning the mobile app, the top 3 concerns are:
-              </p>
-              <ul className="mt-2 space-y-1 text-sentio-gray text-sm">
-                <li className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-red-400" /> Slow loading times (38%)
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-yellow-400" /> Checkout bugs (27%)
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-orange-400" /> Push notification issues (19%)
-                </li>
-              </ul>
-            </div>
+<div className="bg-sentio-blue/5 rounded-lg p-3 text-sm border border-sentio-blue/20">
+                              <p className="text-sentio-blue mb-2 text-xs font-medium">Analysis complete:</p>
+                              <p className="text-sentio-dark">
+                                Based on 4,892 finance app reviews, the top negative trends are:
+                              </p>
+                              <ul className="mt-2 space-y-1 text-sentio-gray text-sm">
+                                <li className="flex items-center gap-2">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-red-400" /> Security concerns (42%)
+                                </li>
+                                <li className="flex items-center gap-2">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-yellow-400" /> Sync issues with banks (31%)
+                                </li>
+                                <li className="flex items-center gap-2">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-orange-400" /> Hidden fees transparency (18%)
+                                </li>
+                              </ul>
+                            </div>
           </div>
         </div>
       </div>
