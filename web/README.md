@@ -6,9 +6,6 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 web/
 ├── src/
 │   └── app/
-│       ├── api/
-│       │   └── chat/
-│       │       └── route.ts      # Chat API endpoint (AWS Bedrock)
 │       ├── demo/
 │       │   └── page.tsx          # Demo chat interface
 │       ├── globals.css           # Global styles & Tailwind
@@ -21,19 +18,25 @@ web/
 └── tsconfig.json
 ```
 
+## Architecture
+
+The web frontend communicates with the FastAPI backend (`app/`) which provides:
+- **RAG (Retrieval-Augmented Generation)** queries via `/query` endpoint
+- Vector search through ChromaDB
+- LLM integration with AWS Bedrock
+
+**Flow:** Web Frontend → FastAPI `/query` → RAG Service → Vector Store + AWS Bedrock
+
 ## Environment Setup
 
 Create a `.env.local` file in the `web/` directory (same level as `package.json`):
 
 ```bash
 # web/.env.local
-AWS_ACCESS_KEY_ID=your_access_key_here
-AWS_SECRET_ACCESS_KEY=your_secret_key_here
-AWS_REGION=us-west-2
-BEDROCK_MODEL_ID=meta.llama3-8b-instruct-v1:0
+NEXT_PUBLIC_API_URL=http://localhost:8000
 ```
 
-> **Note**: The app runs in demo mode without AWS credentials — no setup required for basic testing.
+> **Note**: Make sure the FastAPI backend is running before using the demo. The backend handles all AWS credentials and LLM configuration.
 
 ## Getting Started
 
@@ -50,3 +53,13 @@ bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+## Prerequisites
+
+Before running the web frontend, ensure the FastAPI backend is running:
+
+1. Navigate to the `app/` directory
+2. Start the FastAPI server (typically on port 8000)
+3. The web frontend will connect to the backend automatically
+
+See the `app/README.md` for FastAPI setup instructions.
