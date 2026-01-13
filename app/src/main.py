@@ -8,6 +8,7 @@ from src.config.logging import get_logger
 from src.config.settings import get_settings
 from src.dependencies import get_vector_store
 from src.routes import ingest_router
+from src.routes import query_router
 
 
 logger = get_logger(__name__)
@@ -51,6 +52,7 @@ def root():
 
 # Register routers
 app.include_router(ingest_router)
+app.include_router(query_router)
 
 @app.get("/health")
 def health_check():
