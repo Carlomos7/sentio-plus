@@ -24,10 +24,11 @@ services:
       - ./data:/app/data:ro
     env_file:
       - app/.env
-
   chromadb:
     image: chromadb/chroma:latest
     ports:
       - "8001:8000"
+    profiles:
+      - local
     volumes:
       - ./app/chroma_data:/data

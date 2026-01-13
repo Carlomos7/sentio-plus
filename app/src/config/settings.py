@@ -18,6 +18,7 @@ class ChromaClientType(str, Enum):
     """ChromaDB client type."""
     PERSISTENT = "persistent"
     HTTP = "http"
+    CLOUD = "cloud"
 
 class LLMProvider(str, Enum):
     """LLM provider type."""
@@ -53,7 +54,10 @@ class Settings(BaseSettings):
     chroma_client_type: ChromaClientType = ChromaClientType.PERSISTENT
     chroma_persist_path: Path = Path("./chroma_data")  # For persistent client
     chroma_host: str = "localhost"              # For HTTP client
-    chroma_port: int = 8001                     # For HTTP client
+    chroma_port: int = 8000                     # For HTTP client
+    chroma_tenant_id: str | None = None
+    chroma_database: str | None = None
+    chroma_cloud_api_key: str | None = None
     chroma_collection_name: str = "sentio_reviews"
     
     # Retrieval
