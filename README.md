@@ -1,5 +1,5 @@
 # Sentio+
-![demo](<data/images/image.png.webp>)
+![demo](<docs/images/image.png.webp>)
 
 ## Overview
 Sentio+ is an AI-powered **decision-support platform** that transforms large-scale, unstructured customer review data into **actionable business insights** using a Retrieval-Augmented Generation (RAG) architecture. It is designed as an **internal intelligence tool** for Product, CX, Strategy, and Leadership teams to understand why customers feel the way they do and what actions should be taken as a result.
@@ -38,7 +38,7 @@ The system translates unstructured feedback into **decision-ready insights** tha
 ---
 
 ## High-Level Architecture
-![demo](<data/images/Frame_2.png>)
+![demo](<docs/images/Frame_2.png>)
 
 Sentio+ follows a **modular Retrieval-Augmented Generation (RAG) architecture** designed for scalability, traceability, and business interpretability. The system is structured to ensure that every generated insight is grounded in real customer evidence and aligned with decision-making needs.
 
