@@ -24,17 +24,23 @@ class VectorStore:
         persist_path: Path | None = None,
         host: str | None = None,
         port: int | None = None,
+        chroma_cloud_api_key: str | None = None,
+        chroma_tenant_id: str | None = None,
+        chroma_database: str | None = None,
     ):
         """Initialize ChromaDB client and collection.
 
         Args:
-            client_type: PERSISTENT for local, HTTP for remote.
+            client_type: PERSISTENT for local, HTTP for remote, CLOUD for cloud.
             collection_name: Name of the collection.
             persist_path: Directory for persistent storage (persistent only).
             host: ChromaDB server host (HTTP only).
             port: ChromaDB server port (HTTP only).
+            chroma_cloud_api_key: ChromaDB cloud API key.
+            chroma_tenant_id: ChromaDB cloud tenant ID.
+            chroma_database: ChromaDB cloud database name.
         """
-        self.client = self._create_client(client_type, persist_path, host, port)
+        self.client = self._create_client(client_type, persist_path, host, port, chroma_cloud_api_key, chroma_tenant_id, chroma_database)
         self.collection = self.client.get_or_create_collection(
             name=collection_name,
             metadata={"hnsw:space": "cosine"},
@@ -49,6 +55,9 @@ class VectorStore:
         persist_path: Path | None,
         host: str | None,
         port: int | None,
+        chroma_cloud_api_key: str | None,
+        chroma_tenant_id: str | None,
+        chroma_database: str | None,
     ) -> ClientAPI:
         """Create the appropriate ChromaDB client."""
         if client_type == ChromaClientType.PERSISTENT:
@@ -65,6 +74,15 @@ class VectorStore:
             return chromadb.HttpClient(
                 host=host,
                 port=port,
+                settings=ChromaSettings(anonymized_telemetry=False),
+            )
+        elif client_type == ChromaClientType.CLOUD:
+            if not chroma_cloud_api_key or not chroma_tenant_id or not chroma_database:
+                raise ValueError("chroma_cloud_api_key and chroma_tenant_id required for cloud client")
+            return chromadb.CloudClient(
+                tenant=chroma_tenant_id,
+                database=chroma_database,
+                api_key=chroma_cloud_api_key,
                 settings=ChromaSettings(anonymized_telemetry=False),
             )
         else:
