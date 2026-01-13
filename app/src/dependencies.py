@@ -50,6 +50,8 @@ def get_llm() -> LLMClient:
         temperature=settings.llm_temperature,
         max_tokens=settings.llm_max_tokens,
         aws_region=settings.aws_region,
+        aws_access_key_id=settings.aws_access_key_id,
+        aws_secret_access_key=settings.aws_secret_access_key,
     )
 
 def get_rag_service() -> RAGService:
