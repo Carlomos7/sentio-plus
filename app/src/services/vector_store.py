@@ -114,17 +114,23 @@ class VectorStore:
             metadatas = [{} for _ in documents]
 
         total = len(documents)
+        added = 0
         for i in range(0, total, batch_size):  # Each batch
             end = min(i + batch_size, total)
-            self.collection.add(
-                documents=documents[i:end],
-                metadatas=metadatas[i:end],
-                ids=ids[i:end],
-            )
-            logger.info(f"   ✅ Batch {i}:{end} added")
+            try:
+                self.collection.add(
+                    documents=documents[i:end],
+                    metadatas=metadatas[i:end],
+                    ids=ids[i:end],
+                )
+                added += (end - i)
+                logger.info(f"   ✅ Batch {i}:{end} added")
+            except Exception as e:
+                logger.error(f"❌ Batch {i}:{end} failed: {e}")
+                raise
 
-        logger.info(f"Added {total} documents. Collection count: {self.collection.count()}")
-        return total
+        logger.info(f"Added {added} documents. Collection count: {self.collection.count()}")
+        return added
 
     def query(
         self,
