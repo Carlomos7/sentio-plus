@@ -1,4 +1,5 @@
 # Sentio+
+![demo](<data/images/image.png.webp>)
 
 ## Overview
 Sentio+ is an AI-powered **decision-support platform** that transforms large-scale, unstructured customer review data into **actionable business insights** using a Retrieval-Augmented Generation (RAG) architecture. It is designed as an **internal intelligence tool** for Product, CX, Strategy, and Leadership teams to understand why customers feel the way they do and what actions should be taken as a result.
@@ -37,21 +38,7 @@ The system translates unstructured feedback into **decision-ready insights** tha
 ---
 
 ## High-Level Architecture
-```mermaid
-flowchart LR
-    A[📊 INGEST\nRaw Reviews\nKaggle CSVs] --> B[⚙️ PROCESS\nPreprocessing\nClean & Enrich]
-    B --> C[🧬 EMBED\nVector Store\nChromaDB]
-    C --> D[🔍 RETRIEVE\nSemantic Search\nTop-K + Metadata]
-    D --> E[🤖 GENERATE\nLLM Synthesis\nAWS Bedrock]
-    E --> F[💡 Evidence-Grounded\nBusiness Insights]
-
-    style A fill:#1e3a5f,stroke:#3b82f6,color:#fff
-    style B fill:#4a3728,stroke:#f59e0b,color:#fff
-    style C fill:#1a3a2f,stroke:#10b981,color:#fff
-    style D fill:#2d2554,stroke:#8b5cf6,color:#fff
-    style E fill:#4a1942,stroke:#ec4899,color:#fff
-    style F fill:#065f46,stroke:#10b981,stroke-width:3px,color:#fff
-```
+![demo](<data/images/Frame 2.png>)
 
 Sentio+ follows a **modular Retrieval-Augmented Generation (RAG) architecture** designed for scalability, traceability, and business interpretability. The system is structured to ensure that every generated insight is grounded in real customer evidence and aligned with decision-making needs.
 
@@ -102,10 +89,6 @@ Sentio+ follows a **modular Retrieval-Augmented Generation (RAG) architecture** 
 
 - Chat-style interface for natural language queries
 
-- Streaming responses with cited evidence
-
-- Interactive drill-down into retrieved review excerpts
-
 ### Storage & Infrastructure
 - **Amazon S3** for raw and processed dataset storage
 - Local execution for development with cloud-based model services
@@ -117,6 +100,7 @@ Sentio+ is powered by the [Google Play Store Reviews](https://www.kaggle.com/dat
 
 - **Source:** Kaggle – Google Play Market Reviews
 - **Scale:** ~1M reviews across ~500 app titles (subset used during prototyping)
+- **Sampling:** Sampled 50,000 reviews
 - **Key Fields:**
 
     - Review text
@@ -235,7 +219,7 @@ This ensures every insight is **explainable, auditable, and trusted.**
 - Detect systemic issues across product lines
 - Inform roadmap and investment decisions
 
-## Customer Experience (CX)
+### Customer Experience (CX)
 - Understand root causes of negative sentiment
 - Track shifts in customer perception over time
 
@@ -280,14 +264,9 @@ Sentio+ is intentionally designed as a consulting-grade internal analytics tool,
 
 1. **Product Prioritization:** "What are the top 3 recurring bugs users want fixed in Finance apps?"
 2. **Competitive Analysis:** "How do user complaints about subscription pricing compare across categories?"
-3. **Roadmap Planning:** "What features are users requesting most in the last quarter?"CX Improvements: "Why are 1-star reviews spiking for our top apps?"
-4. **Audience Insights:** "What do Teen-rated app users complain about vs Everyone-rated apps?"
-
-<!--link to detailed business logic-->
-
----
-
-## Future Enhancements
+3. **Roadmap Planning:** "What features are users requesting most in the last quarter?
+4. **CX Improvements:** "Why are 1-star reviews spiking for our top apps?"
+5. **Audience Insights:** "What do Teen-rated app users complain about vs Everyone-rated apps?"
 
 ---
 
