@@ -20,6 +20,8 @@ interface Message {
   role: "user" | "assistant";
   content: string;
   timestamp: number;
+  sources?: string[];
+  numDocs?: number;
 }
 
 interface ChatSession {
@@ -30,6 +32,7 @@ interface ChatSession {
 }
 
 const STORAGE_KEY = "sentio-chat-sessions";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 const SAMPLE_QUESTIONS = [
   "What are the main complaints about our mobile app?",
   "What do customers love most about our product?",
@@ -151,22 +154,29 @@ export default function DemoPage() {
     setIsLoading(true);
 
     try {
-      const response = await fetch("/api/chat", {
+      const response = await fetch(`${API_URL}/query`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          message: content,
-          sessionId,
+          question: content.trim(),
+          filter_by_source: true,
         }),
       });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.detail || `API error: ${response.status}`);
+      }
 
       const data = await response.json();
 
       const assistantMessage: Message = {
         id: crypto.randomUUID(),
         role: "assistant",
-        content: data.response || "I encountered an error processing your request.",
+        content: data.answer || "I couldn't generate a response.",
         timestamp: Date.now(),
+        sources: data.sources || [],
+        numDocs: data.num_docs || 0,
       };
 
       setSessions((prev) =>
@@ -176,11 +186,14 @@ export default function DemoPage() {
             : s
         )
       );
-    } catch {
+    } catch (error) {
       const errorMessage: Message = {
         id: crypto.randomUUID(),
         role: "assistant",
-        content: "Sorry, I encountered an error. Please try again.",
+        content:
+          error instanceof Error
+            ? `Sorry, I encountered an error: ${error.message}. Please make sure the FastAPI backend is running.`
+            : "Sorry, I encountered an error. Please try again.",
         timestamp: Date.now(),
       };
 
@@ -422,6 +435,23 @@ export default function DemoPage() {
                       }`}
                     >
                       <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
+                      {msg.role === "assistant" && msg.sources && msg.sources.length > 0 && (
+                        <div className="mt-3 pt-3 border-t border-sentio-border">
+                          <p className="text-xs text-sentio-gray mb-2">
+                            Sources ({msg.numDocs || msg.sources.length} documents):
+                          </p>
+                          <div className="flex flex-wrap gap-2">
+                            {msg.sources.map((source, idx) => (
+                              <span
+                                key={idx}
+                                className="px-2 py-1 text-xs rounded-full bg-sentio-blue/10 text-sentio-blue border border-sentio-blue/20"
+                              >
+                                {source}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </motion.div>
                 ))}
@@ -468,8 +498,7 @@ export default function DemoPage() {
               </button>
             </div>
             <p className="text-xs text-sentio-gray text-center mt-2">
-              Demo mode — responses are simulated. Connect to AWS Bedrock for
-              real AI analysis.
+              Powered by FastAPI RAG backend • Using semantic search and AI analysis
             </p>
           </form>
         </div>
