@@ -38,7 +38,7 @@ The system translates unstructured feedback into **decision-ready insights** tha
 ---
 
 ## High-Level Architecture
-![demo](<data/images/Frame 2.png>)
+![demo](<data/images/Frame_2.png>)
 
 Sentio+ follows a **modular Retrieval-Augmented Generation (RAG) architecture** designed for scalability, traceability, and business interpretability. The system is structured to ensure that every generated insight is grounded in real customer evidence and aligned with decision-making needs.
 
