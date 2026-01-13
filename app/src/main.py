@@ -5,13 +5,13 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from src.config.logging import get_logger
+from src.config.logging import get_logger, setup_logging
 from src.config.settings import get_settings
 from src.dependencies import get_vector_store
 from src.routes import ingest_router
 from src.routes import query_router
 
-
+setup_logging()
 logger = get_logger(__name__)
 settings = get_settings()
 
