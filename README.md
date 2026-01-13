@@ -37,7 +37,21 @@ The system translates unstructured feedback into **decision-ready insights** tha
 ---
 
 ## High-Level Architecture
-<!-- insert architecture diagram-->
+```mermaid
+flowchart LR
+    A[📊 INGEST\nRaw Reviews\nKaggle CSVs] --> B[⚙️ PROCESS\nPreprocessing\nClean & Enrich]
+    B --> C[🧬 EMBED\nVector Store\nChromaDB]
+    C --> D[🔍 RETRIEVE\nSemantic Search\nTop-K + Metadata]
+    D --> E[🤖 GENERATE\nLLM Synthesis\nAWS Bedrock]
+    E --> F[💡 Evidence-Grounded\nBusiness Insights]
+
+    style A fill:#1e3a5f,stroke:#3b82f6,color:#fff
+    style B fill:#4a3728,stroke:#f59e0b,color:#fff
+    style C fill:#1a3a2f,stroke:#10b981,color:#fff
+    style D fill:#2d2554,stroke:#8b5cf6,color:#fff
+    style E fill:#4a1942,stroke:#ec4899,color:#fff
+    style F fill:#065f46,stroke:#10b981,stroke-width:3px,color:#fff
+```
 
 Sentio+ follows a **modular Retrieval-Augmented Generation (RAG) architecture** designed for scalability, traceability, and business interpretability. The system is structured to ensure that every generated insight is grounded in real customer evidence and aligned with decision-making needs.
 
@@ -60,7 +74,7 @@ Sentio+ follows a **modular Retrieval-Augmented Generation (RAG) architecture** 
 
 - **Pandas / NumPy** for data cleaning and transformation
 
-- **Jupyter Notebooks** (```/notebooks``) for exploration, validation, and iterative development
+- **Jupyter Notebooks** (```/notebooks```) for exploration, validation, and iterative development
 
 - **KaggleHub** for dataset retrieval
 
