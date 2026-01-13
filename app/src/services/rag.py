@@ -112,12 +112,11 @@ class RAGService:
         )
 
         response = self.llm.invoke_structured(formatted)
-        #content = response.strip().lower()
-
-        if response == "none" or not response:
+        
+        # invoke_structured returns a list
+        if not response or (isinstance(response, list) and len(response) == 1 and response[0].lower() == "none"):
             return []
 
-        #selected = [s.strip() for s in response.split(",") if s.strip()]
         logger.debug(f"LLM selected sources: {response}")
 
         return response
@@ -142,5 +141,5 @@ class RAGService:
         )
 
         formatted = prompt.format(context=context, question=question)
-        return self.llm.invoke_structured(formatted)
+        return self.llm.invoke(formatted)
     
