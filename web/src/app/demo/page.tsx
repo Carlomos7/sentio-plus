@@ -21,8 +21,6 @@ interface Message {
   role: "user" | "assistant";
   content: string;
   timestamp: number;
-  sources?: string[];
-  numDocs?: number;
 }
 
 interface ChatSession {
@@ -35,10 +33,10 @@ interface ChatSession {
 const STORAGE_KEY = "sentio-chat-sessions";
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 const SAMPLE_QUESTIONS = [
-  "What are the trends for negative reviews in finance apps?",
-  "Which health & fitness apps have the best user retention feedback?",
-  "Compare sentiment patterns between food delivery apps",
-  "What features drive 5-star reviews in productivity apps?",
+  "What apps do you have reviews for?",
+  "What do users complain about in Google Wallet?",
+  "How many reviews are in the collection?",
+  "Compare user sentiment between different finance apps",
 ];
 
 export default function DemoPage() {
@@ -155,12 +153,12 @@ export default function DemoPage() {
     setIsLoading(true);
 
     try {
-      const response = await fetch(`${API_URL}/query`, {
+      const response = await fetch(`${API_URL}/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          question: content.trim(),
-          filter_by_source: true,
+          message: content.trim(),
+          thread_id: sessionId,
         }),
       });
 
@@ -174,10 +172,8 @@ export default function DemoPage() {
       const assistantMessage: Message = {
         id: crypto.randomUUID(),
         role: "assistant",
-        content: data.answer || "I couldn't generate a response.",
+        content: data.response || "I couldn't generate a response.",
         timestamp: Date.now(),
-        sources: data.sources || [],
-        numDocs: data.num_docs || 0,
       };
 
       setSessions((prev) =>
@@ -368,7 +364,7 @@ export default function DemoPage() {
                 </h1>
               )}
               <p className="text-xs text-sentio-gray">
-                Context from all 12,495 reviews
+                AI Agent with review search, stats, and app listing tools
               </p>
             </div>
           </div>
@@ -396,8 +392,8 @@ export default function DemoPage() {
                   Welcome to Sentio Demo
                 </h2>
                 <p className="text-sentio-gray mb-8">
-                  Ask me anything about your customer reviews. I can analyze
-                  sentiment, find patterns, and surface insights.
+                  I&apos;m an AI agent with tools to search reviews, list apps, and 
+                  show collection stats. Ask me anything—I remember our conversation!
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {SAMPLE_QUESTIONS.map((question, i) => (
@@ -487,23 +483,6 @@ export default function DemoPage() {
                       ) : (
                         <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
                       )}
-                      {msg.role === "assistant" && msg.sources && msg.sources.length > 0 && (
-                        <div className="mt-3 pt-3 border-t border-sentio-border">
-                          <p className="text-xs text-sentio-gray mb-2">
-                            Sources ({msg.numDocs || msg.sources.length} documents):
-                          </p>
-                          <div className="flex flex-wrap gap-2">
-                            {msg.sources.map((source, idx) => (
-                              <span
-                                key={idx}
-                                className="px-2 py-1 text-xs rounded-full bg-sentio-blue/10 text-sentio-blue border border-sentio-blue/20"
-                              >
-                                {source}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-                      )}
                     </div>
                   </motion.div>
                 ))}
@@ -550,7 +529,7 @@ export default function DemoPage() {
               </button>
             </div>
             <p className="text-xs text-sentio-gray text-center mt-2">
-              Powered by FastAPI RAG backend • Using semantic search and AI analysis
+              Powered by LangChain Agent • Conversational memory enabled
             </p>
           </form>
         </div>
