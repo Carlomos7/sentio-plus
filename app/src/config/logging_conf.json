@@ -38,7 +38,7 @@
       }
     },
     "loggers": {
-      "wage_etl": {
+      "src": {
         "level": "DEBUG",
         "handlers": ["console", "file", "error_file"],
         "propagate": false

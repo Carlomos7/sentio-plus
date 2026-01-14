@@ -9,6 +9,7 @@ from src.config.logging import get_logger
 from src.config.settings import Settings, get_settings
 from src.dependencies import get_ingest_service
 from src.services.ingest import IngestionService
+from chromadb.errors import ChromaError
 
 logger = get_logger(__name__)
 
@@ -156,6 +157,13 @@ async def upload_and_ingest(
             limit=limit,
         )
         return {"success": True, "filename": file.filename, **result}
+    except ChromaError as e:
+        error_msg = str(e)
+        if "Quota exceeded" in error_msg:
+            logger.warning(f"ChromaDB quota exceeded: {e}")
+            raise HTTPException(status_code=429, detail=error_msg)
+        logger.error(f"ChromaDB error: {e}")
+        raise HTTPException(status_code=500, detail=error_msg)
     except ValueError as e:
         logger.error(f"Validation error: {e}")
         raise HTTPException(status_code=400, detail=str(e))

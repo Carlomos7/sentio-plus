@@ -27,6 +27,9 @@ def get_vector_store() -> VectorStore:
         persist_path=settings.chroma_persist_path,
         host=settings.chroma_host,
         port=settings.chroma_port,
+        chroma_cloud_api_key=settings.chroma_cloud_api_key,
+        chroma_tenant_id=settings.chroma_tenant_id,
+        chroma_database=settings.chroma_database,
     )
 
 def get_ingest_service() -> IngestionService:
