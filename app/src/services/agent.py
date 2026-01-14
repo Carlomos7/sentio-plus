@@ -10,6 +10,7 @@ from src.config.logging import get_logger
 from src.services.ingest import IngestionService
 from src.services.rag import RAGService
 from src.services.vector_store import VectorStore
+from src.prompts.templates import AGENT_SYSTEM_PROMPT
 
 logger = get_logger(__name__)
 
@@ -159,6 +160,7 @@ class AgentService:
             llm,
             tools=self.tools,
             checkpointer=self.checkpointer,
+            system_prompt=AGENT_SYSTEM_PROMPT,
         )
         
         logger.info(f"AgentService initialized with {len(self.tools)} tools")
