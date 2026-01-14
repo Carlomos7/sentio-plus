@@ -4,6 +4,7 @@ from functools import lru_cache
 
 from src.config.logging import get_logger
 from src.config.settings import Settings, get_settings
+from src.services.agent import AgentService
 from src.services.ingest import IngestionService
 from src.services.llm import LLMClient
 from src.services.rag import RAGService
@@ -65,4 +66,22 @@ def get_rag_service() -> RAGService:
         vector_store=get_vector_store(),
         top_k=settings.retrieval_top_k,
         threshold=settings.retrieval_threshold,
+    )
+
+
+@lru_cache
+def get_agent_service() -> AgentService:
+    """Provide LangChain agent service instance."""
+    settings = get_settings()
+    return AgentService(
+        vector_store=get_vector_store(),
+        provider=settings.llm_provider,
+        model=settings.llm_model,
+        temperature=settings.llm_temperature,
+        max_tokens=settings.llm_max_tokens,
+        base_url=settings.llm_base_url,
+        api_key=settings.llm_api_key,
+        aws_region=settings.aws_region,
+        aws_access_key_id=settings.aws_access_key_id,
+        aws_secret_access_key=settings.aws_secret_access_key,
     )

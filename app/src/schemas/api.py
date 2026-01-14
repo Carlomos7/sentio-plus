@@ -70,3 +70,20 @@ class ModelInfoResponse(BaseModel):
     model: str
     temperature: float
     max_tokens: int
+
+
+# --- Agent Schemas ---
+
+class ToolCall(BaseModel):
+    """Tool call made by the agent."""
+
+    name: str
+    args: dict
+
+
+class AgentResponse(BaseModel):
+    """Response from agent query."""
+
+    answer: str
+    tool_calls: list[ToolCall] = []
+    num_messages: int = 0
