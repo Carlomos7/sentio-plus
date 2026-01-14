@@ -70,3 +70,37 @@ class ModelInfoResponse(BaseModel):
     model: str
     temperature: float
     max_tokens: int
+
+
+# --- Chat Schemas (Agent) ---
+
+class ChatRequest(BaseModel):
+    """Request to chat with the agent."""
+
+    message: str = Field(
+        ...,
+        min_length=1,
+        max_length=2000,
+        description="User message to send to the agent",
+        examples=["What do users complain about in Google Wallet?"],
+    )
+    thread_id: str = Field(
+        ...,
+        min_length=1,
+        max_length=100,
+        description="Unique thread ID for conversation memory",
+        examples=["user-123-session-1"],
+    )
+
+
+class ChatResponse(BaseModel):
+    """Response from the agent."""
+
+    response: str = Field(
+        ...,
+        description="Agent's response to the user message",
+    )
+    thread_id: str = Field(
+        ...,
+        description="Thread ID for the conversation",
+    )

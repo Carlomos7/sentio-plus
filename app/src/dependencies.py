@@ -4,6 +4,7 @@ from functools import lru_cache
 
 from src.config.logging import get_logger
 from src.config.settings import Settings, get_settings
+from src.services.agent import AgentService
 from src.services.ingest import IngestionService
 from src.services.llm import LLMClient
 from src.services.rag import RAGService
@@ -65,4 +66,23 @@ def get_rag_service() -> RAGService:
         vector_store=get_vector_store(),
         top_k=settings.retrieval_top_k,
         threshold=settings.retrieval_threshold,
+    )
+
+
+@lru_cache
+def get_agent_service() -> AgentService:
+    """Provide LangChain agent service instance.
+    
+    The agent has access to tools for:
+    - search_reviews: Query the RAG system
+    - get_collection_stats: Get document statistics
+    - list_available_apps: List apps with reviews
+    """
+    llm_client = get_llm()
+    
+    return AgentService(
+        llm=llm_client.llm,  # Pass the underlying LangChain model
+        rag_service=get_rag_service(),
+        ingest_service=get_ingest_service(),
+        vector_store=get_vector_store(),
     )
