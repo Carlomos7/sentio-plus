@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+import ReactMarkdown from "react-markdown";
 import {
   ArrowLeft,
   Send,
@@ -34,10 +35,10 @@ interface ChatSession {
 const STORAGE_KEY = "sentio-chat-sessions";
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 const SAMPLE_QUESTIONS = [
-  "What are the main complaints about our mobile app?",
-  "What do customers love most about our product?",
-  "Show me sentiment trends from last month",
-  "Which features get the most negative feedback?",
+  "What are the trends for negative reviews in finance apps?",
+  "Which health & fitness apps have the best user retention feedback?",
+  "Compare sentiment patterns between food delivery apps",
+  "What features drive 5-star reviews in productivity apps?",
 ];
 
 export default function DemoPage() {
@@ -434,7 +435,58 @@ export default function DemoPage() {
                           : "bg-white border border-sentio-border text-sentio-dark card-shadow"
                       }`}
                     >
-                      <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
+                      {msg.role === "assistant" ? (
+                        <div className="text-sm markdown-content">
+                          <ReactMarkdown
+                            components={{
+                              p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
+                              h1: ({ children }) => <h1 className="text-lg font-bold mb-2 mt-3 first:mt-0">{children}</h1>,
+                              h2: ({ children }) => <h2 className="text-base font-bold mb-2 mt-3 first:mt-0">{children}</h2>,
+                              h3: ({ children }) => <h3 className="text-sm font-semibold mb-2 mt-3 first:mt-0">{children}</h3>,
+                              ul: ({ children }) => <ul className="list-disc list-inside mb-2 space-y-1">{children}</ul>,
+                              ol: ({ children }) => <ol className="list-decimal list-inside mb-2 space-y-1">{children}</ol>,
+                              li: ({ children }) => <li className="ml-2">{children}</li>,
+                              code: ({ children, className }) => {
+                                const isInline = !className;
+                                return isInline ? (
+                                  <code className="bg-sentio-light text-sentio-blue px-1.5 py-0.5 rounded text-xs font-mono">
+                                    {children}
+                                  </code>
+                                ) : (
+                                  <code className={className}>{children}</code>
+                                );
+                              },
+                              pre: ({ children }) => (
+                                <pre className="bg-sentio-light border border-sentio-border rounded-lg p-3 overflow-x-auto mb-2 text-xs">
+                                  {children}
+                                </pre>
+                              ),
+                              strong: ({ children }) => <strong className="font-semibold text-sentio-dark">{children}</strong>,
+                              em: ({ children }) => <em className="italic">{children}</em>,
+                              a: ({ href, children }) => (
+                                <a
+                                  href={href}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-sentio-blue underline hover:text-sentio-blue-light"
+                                >
+                                  {children}
+                                </a>
+                              ),
+                              blockquote: ({ children }) => (
+                                <blockquote className="border-l-4 border-sentio-blue pl-4 italic text-sentio-gray my-2">
+                                  {children}
+                                </blockquote>
+                              ),
+                              hr: () => <hr className="my-3 border-sentio-border" />,
+                            }}
+                          >
+                            {msg.content}
+                          </ReactMarkdown>
+                        </div>
+                      ) : (
+                        <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
+                      )}
                       {msg.role === "assistant" && msg.sources && msg.sources.length > 0 && (
                         <div className="mt-3 pt-3 border-t border-sentio-border">
                           <p className="text-xs text-sentio-gray mb-2">
